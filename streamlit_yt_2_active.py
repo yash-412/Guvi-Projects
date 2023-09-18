@@ -401,11 +401,13 @@ elif selected_option == "Show Data":
         playlist_names_ids[playlist_name] = playlist_id
 
     video_names_ids = {}
-    for item in videos_data:
-        video_name = item[0]['snippet']['title']
-        video_id = item[0]['id']
-        if video_name and video_id:
-            video_names_ids[video_id] = video_name
+    for video_data in videos_data:
+        if video_data and video_data[0]:
+            snippet = video_data[0]['snippet']
+            video_id = video_data[0]['id']
+            if 'title' in snippet and video_id:
+                video_name = snippet['title']
+                video_names_ids[video_id] = video_name
 
     selected_playlist_name = st.selectbox("Select a playlist", list(playlist_names_ids.keys()), key=playlist_selectbox_key)
 
