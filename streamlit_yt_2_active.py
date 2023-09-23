@@ -368,11 +368,31 @@ elif selected_option == "Query Data":
 elif selected_option == "Show Data":
     document = col.find_one({})
     if document:
-        channels_data = document.get("channel", {})
-        channel_df = pd.DataFrame([channels_data])
+        channels_data = []
+        channel = col.find_one({}).get("channel", {})
+        channel_info = channel[0]['snippet']
+        channel_statistics = channel[0]['statistics']
+        channel_id = channel[0]['id']
+        channel_title = channel_info['title']
+        channel_description = channel_info['description']
+        channel_published_date = channel_info['publishedAt']
+        channel_views = channel_statistics['viewCount']
+        channel_subscribers = channel_statistics['subscriberCount']
+        channel_videos = channel_statistics['videoCount']
+    
+        channels_data.append({
+            "id": channel_id,
+            "title": channel_title,
+            "description": channel_description,
+            "publishedAt": channel_published_date,
+            "viewCount": channel_views,
+            "subscriberCount": channel_subscribers,
+            "videoCount": channel_videos
+        })
+        channel_df = pd.DataFrame(channels_data)
         st.write("Channel Data:")
         st.write(channel_df)
-
+        
     playlists_data = []
     playlist_items_data = []
     videos_data = []
