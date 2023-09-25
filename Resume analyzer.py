@@ -1,5 +1,3 @@
-# pdf miner and open api integration part
-
 import os
 import tkinter as tk
 from tkinterdnd2 import DND_FILES, TkinterDnD
@@ -8,34 +6,80 @@ import openai
 
 # Set your OpenAI API key here
 api_key = ""
-openai.api_key = api_key
+
+job_description = """
+Job Description:
+We are seeking a talented Data Scientist to join our team. The ideal candidate will have a passion for uncovering insights from data and driving data-driven decision-making. As a Data Scientist, you will be responsible for developing and implementing innovative data analysis solutions to solve complex business problems. You will work closely with cross-functional teams to translate data into actionable insights and contribute to the development of data-driven strategies.
+
+Key Responsibilities:
+
+- Data Analysis: Analyze large datasets to identify trends, patterns, and correlations, and derive actionable insights.
+- Machine Learning: Develop and implement machine learning models for predictive and prescriptive analytics.
+- Data Visualization: Create visually compelling data visualizations and reports to communicate findings effectively.
+- Statistical Analysis: Apply statistical methods to validate hypotheses and draw meaningful conclusions.
+- Data Cleaning: Clean and preprocess raw data to ensure data quality and accuracy.
+- Model Evaluation: Evaluate and fine-tune machine learning models for optimal performance.
+- Cross-Functional Collaboration: Collaborate with teams across the organization to understand business objectives and provide data-driven solutions.
+- Research: Stay updated with the latest industry trends and emerging technologies in data science.
+
+Required Skills:
+
+- Proficiency in programming languages such as Python or R.
+- Strong knowledge of machine learning algorithms and techniques.
+- Experience with data manipulation libraries (e.g., pandas, NumPy) and machine learning frameworks (e.g., scikit-learn, TensorFlow).
+- Data visualization skills using tools like Matplotlib, Seaborn, or Tableau.
+- Excellent problem-solving and analytical skills.
+- Effective communication skills to convey complex findings to non-technical stakeholders.
+- Knowledge of statistical analysis and hypothesis testing.
+- Familiarity with databases and SQL.
+- Experience with big data technologies (e.g., Hadoop, Spark) is a plus.
+
+Experience:
+
+- Bachelor's, Master's, or Ph.D. in a relevant field (e.g., Computer Science, Statistics, Mathematics).
+- Minimum of 3 years of experience as a Data Scientist or in a similar role.
+- Proven track record of successfully applying data science techniques to solve real-world problems.
+- Experience in working with large-scale datasets and machine learning model development.
+
+Join our team and play a crucial role in driving data-driven decision-making, innovation, and growth within our organization. If you are passionate about data and have the skills to make a significant impact, we would love to hear from you.
+"""
+
+def analyze_resume(user_resume, job_description, api_key):
+    openai.api_key = api_key
+
+    system_msg = 'You are a helpful assistant who understands the contents of a resume and a job description given by the user.'
+
+    job_insights = []
+
+    # Construct the prompt with user's resume and job description
+    prompt = f"{system_msg}\nUser Resume:\n{user_resume}\n\nJob Description:\n{job_description}\n\nPlease analyze the user's resume and compare it to the job description. Focus on academic qualifications, skills, work experience, and projects. Highlight strengths and weaknesses for the specific job role and suggest skills to improve:\n\nStrengths:\n- Compare the skills, projects and degree to that with job description and mention the matching skills/degrees as strengths.\n- If experience section is present, see how the experience is relevant to the job description.\n- Notable projects completed, including [mention projects] if they are relevant to the job description.\n\nWeaknesses:\n- If the resume has a different degree than what is mentioned in the job description.\n- Projects could benefit from more [mention improvements].\n\nSuggested Improvements:\n- Enhance skills in [mention skills] through courses, certification or projects that will help show-off your skills.\n- Seek opportunities to gain more experience in [mention area].\n\nOverall, the candidate is suitable for the job but needs to improve on [specify the skills] or if the job description and resume has more than 5 differences, the user's resume does not match the job."
+
+    messages = [
+        {"role": "system", "content": system_msg},
+        {"role": "user", "content": prompt},
+    ]
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    job_insight = response["choices"][-1]["message"]["content"]
+    job_insights.append(job_insight)
+
+    return job_insights
 
 def on_drop(event):
     file_path = event.data
-    process_pdf(file_path)
+    if file_path.lower().endswith('.pdf'):
+        process_pdf(file_path)
+    else:
+        print("Please drop a PDF file.")
 
 def process_pdf(pdf_file_path):
-    # Extract text from the PDF file using pdfminer
     pdf_text = extract_text(pdf_file_path)
-
-    # Analyze the PDF text using ChatGPT
-    analysis = analyze_text(pdf_text)
-
-    # Print the analysis results
+    analysis = analyze_resume(pdf_text, sample_job_description, api_key)
     print(analysis)
-# ALTER THE PROMPT BEFOREHAND AND DO NOT RUN TILL CONFIRMED
-def analyze_text(text):
-    # Call the ChatGPT API to analyze the text
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=f"Analyze this resume text and give in a maximum of 3 words which job this resume is suitable for by cross checking with jobs in linkedIn:\n{text}\n\nAnalysis:",
-        max_tokens=200  # Adjust the number of tokens as needed
-    )
-
-    # Extract the generated analysis from the API response
-    analysis = response.choices[0].text
-
-    return analysis
 
 # Create a root window for the GUI
 root = TkinterDnD.Tk()
@@ -55,51 +99,3 @@ drop_target.dnd_bind('<<Drop>>', on_drop)
 
 # Start the GUI main loop
 root.mainloop()
-
-# job description extraction part 
-
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-
-# Prompt the user for a job title
-job_title = input("Enter a job title: ")
-location = input("Enter a location: ")
-# Set up the WebDriver with the path to your Chrome WebDriver executable
-driver = webdriver.Edge()
-
-# URL of the Indeed website
-url = 'https://in.indeed.com/'
-
-# Open the URL in the browser
-driver.get(url)
-
-# Wait for the search bar to become clickable
-search_bar = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '//*[@id="text-input-what"]'))
-)
-
-# Enter the job title in the search bar
-search_bar.send_keys(job_title)
-
-# Wait for the location search bar to become clickable
-location_search_bar = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '//*[@id="text-input-where"]'))
-)
-
-# Enter the location in the location search bar
-location_search_bar.send_keys(location)
-
-# Simulate pressing Enter to submit the search
-location_search_bar.send_keys(Keys.RETURN)
-
-# Close the browser window after a few seconds (you can adjust the delay)
-#driver.implicitly_wait(30)
-
-time.sleep(3)
-
-# Quit the WebDriver
-driver.quit()
