@@ -1,8 +1,8 @@
-pip install streamlit
+'''pip install streamlit
 pip install pandas
 pip install mysql-connector-python
 pip install plotly
-pip install gitpython
+pip install gitpython'''
 
 import streamlit as st
 import os
