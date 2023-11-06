@@ -1,0 +1,2 @@
+# yt data harvester 
+# 1st own project on data handling, api caling, SQL connectors, MongoDB connection
