@@ -1,0 +1,2 @@
+# extracted text from image and store data in SQL database
+# included data editor in website
