@@ -1,4 +1,3 @@
-pip install -r requirments.txt
 import os
 import googleapiclient.discovery
 import googleapiclient.errors
