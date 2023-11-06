@@ -1,10 +1,10 @@
-streamlit
-os
-googleapiclient
-json
+pandas
+mysql-connector-python
+plotly
+gitpython
 streamlit
 psycopg2
-pandas
 sqlalchemy
 isodate
 streamlit-webrtc
+google-api-python-client
