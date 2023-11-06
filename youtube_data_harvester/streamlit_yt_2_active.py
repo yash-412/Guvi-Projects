@@ -6,6 +6,7 @@ import streamlit as st
 import psycopg2
 from googleapiclient.discovery import build
 import pymongo
+from pymongo.mongo_client import MongoClient
 from googleapiclient.errors import HttpError
 from streamlit_webrtc import webrtc_streamer
 import pandas as pd
@@ -14,10 +15,10 @@ from sqlalchemy import Column, String, Integer, BigInteger, Text, MetaData, crea
 from sqlalchemy.ext.declarative import declarative_base
 import isodate
 
-api_key = 'AIzaSyDh12-HTXwBoHkwDdXd7DKQUSsEON2t1mY'
+api_key = 'AIzaSyCiH_CF2iTOAP3NyGf88Tb1bC1780bK9x4'
 youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
 
-m = pymongo.MongoClient("mongodb+srv://guvi_1:guvi1234@mongoguvi.t5ahkrs.mongodb.net/?retryWrites=true&w=majority")
+m = pymongo.MongoClient("mongodb://guvi_1:guvi1234@ac-qdjuliv-shard-00-00.t5ahkrs.mongodb.net:27017,ac-qdjuliv-shard-00-01.t5ahkrs.mongodb.net:27017,ac-qdjuliv-shard-00-02.t5ahkrs.mongodb.net:27017/?ssl=true&replicaSet=atlas-117bl4-shard-0&authSource=admin&retryWrites=true&w=majority")
 db=m['guvi']
 col=db['book']
 
