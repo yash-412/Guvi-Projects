@@ -2,9 +2,6 @@ pandas
 mysql-connector-python
 plotly
 gitpython
-os
-googleapiclient
-json
 streamlit
 psycopg2
 sqlalchemy
