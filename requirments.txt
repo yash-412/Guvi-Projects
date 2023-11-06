@@ -10,3 +10,4 @@ psycopg2
 sqlalchemy
 isodate
 streamlit-webrtc
+google-api-python-client
