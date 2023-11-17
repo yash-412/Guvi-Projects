@@ -1,0 +1,4 @@
+.pbix files cointains the main PowerBi file where all DAX functions have been performed. 
+The data is collected from World Bank website. 
+This project analyzes the trend in the growth of Female educated population throughout India.
+The PowerBI Project pdf/PowerBI Project pptx contains the insights drawn by analyzing the data.
