@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import pickle
+import os
 
 # Load your trained regression model
 print(os.getcwd())
