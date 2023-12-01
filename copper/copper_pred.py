@@ -6,8 +6,21 @@ import pickle
 import os
 
 # Load your trained regression model
-print(os.getcwd())
-final_model = pickle.load(open("final_model.pkl", 'rb'))
+
+# Get the absolute path to the script's directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Specify the absolute path to the pickle file
+final_model_path = os.path.join(script_dir, "final_model.pkl")
+
+# Check if the file exists before attempting to load it
+if os.path.exists(final_model_path):
+    # Load the model
+    with open(final_model_path, 'rb') as file:
+        final_model = pickle.load(file)
+    st.success("Model loaded successfully.")
+else:
+    st.error("Error: 'final_model.pkl' not found. Please check the file path.")
 
 # Load your saved scaler
 # scaler_path = "path/to/your/scaler.joblib"
