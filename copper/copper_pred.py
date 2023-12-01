@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 import pickle
 
 # Load your trained regression model
-
+print(os.getcwd())
 final_model = pickle.load(open("final_model.pkl", 'rb'))
 
 # Load your saved scaler
