@@ -5,12 +5,12 @@ from sklearn.preprocessing import StandardScaler
 import joblib
 
 # Load your trained regression model
-final_model_path = "path/to/your/final_model.joblib"
-final_model = joblib.load(final_model_path)
+with open("final_model.pkl", 'rb') as file:
+    final_model = pickle.load(file)
 
 # Load your saved scaler
-scaler_path = "path/to/your/scaler.joblib"
-scaler = joblib.load(scaler_path)
+# scaler_path = "path/to/your/scaler.joblib"
+# scaler = joblib.load(scaler_path)
 
 # Function to apply transformations to input data
 def transform_input(input_data):
