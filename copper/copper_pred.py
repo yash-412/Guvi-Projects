@@ -5,8 +5,8 @@ from sklearn.preprocessing import StandardScaler
 import joblib
 
 # Load your trained regression model
-with open("https://github.com/yash-412/Yash-Projects/raw/main/copper/final_model.pkl", 'rb') as file:
-    final_model = pickle.load(file)
+
+final_model = pickle.load(open("final_model.pkl", 'rb'))
 
 # Load your saved scaler
 # scaler_path = "path/to/your/scaler.joblib"
