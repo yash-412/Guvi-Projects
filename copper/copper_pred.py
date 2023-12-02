@@ -9,33 +9,32 @@ from sklearn.preprocessing import OrdinalEncoder, LabelEncoder, StandardScaler, 
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from xgboost import XGBRegressor
 
-# Load your trained regression model
+# Load trained regression model
 
 # Get the absolute path to the script's directory
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Specify the absolute path to the pickle file
+# Specify the absolute path to the pickle file and scalers
 final_model_path = os.path.join(script_dir, "final_model.pkl")
+scaler1_path = os.path.join(script_dir, "scaler1.pkl")
+scaler2_path = os.path.join(script_dir, "scaler2.pkl")
 
-# Check if the file exists before attempting to load it
-if os.path.exists(final_model_path):
-    # Load the model
-    with open(final_model_path, 'rb') as file:
-        final_model = pickle.load(file)
-    st.success("Model loaded successfully.")
-else:
-    st.error("Error: 'final_model.pkl' not found. Please check the file path.")
+# Load final_moidel and scaler1, scaler2
+with open(final_model_path, 'rb') as file:
+    final_model = pickle.load(file)
 
-# Load your saved scaler
-# scaler_path = "path/to/your/scaler.joblib"
-# scaler = joblib.load(scaler_path)
+with open(scaler1_path, 'rb') as file:
+    scaler1 = pickle.load(file)
+
+with open(scaler2_path, 'rb') as file:
+    scaler2 = pickle.load(file)
 
 # Function to apply transformations to input data
 def transform_input(input_data):
     transformed_data = input_data.copy()
 
     # Standardize 'selling_price'
-    transformed_data['selling_price'] = scaler.transform(input_data[['selling_price']])
+    transformed_data['selling_price'] = scaler1.transform(input_data[['selling_price']])
 
     # Log1p transformation for 'quantity_tons_log'
     transformed_data['quantity_tons_log'] = np.log1p(input_data['quantity_tons_log'])
@@ -45,7 +44,7 @@ def transform_input(input_data):
     transformed_data['thickness_log'] = np.log2(input_data['thickness_log'])
 
     # Standardize 'width_log' and 'thickness_log'
-    transformed_data[['width_log', 'thickness_log']] = scaler.transform(
+    transformed_data[['width_log', 'thickness_log']] = scaler2.transform(
         input_data[['width_log', 'thickness_log']]
     )
 
