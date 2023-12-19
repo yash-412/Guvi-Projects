@@ -1,0 +1,7 @@
+git lfs track "*.pkl" # track the .pkl file extension
+git add et_cls_model.pkl rf_reg_model.pkl # add the files to the staging area
+git commit -m "upload et_cls_model.pkl and rf_reg_model.pkl" # commit the files with a message
+git push # push the files to GitHub
+
+check status before and after commit and push
+git status
