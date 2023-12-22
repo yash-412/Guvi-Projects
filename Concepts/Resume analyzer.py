@@ -21,24 +21,50 @@ api_key = 'your api key here'
 # Load the Excel file with job descriptions
 ds_jd_df = pd.read_excel(r"C:\Users\Yash\Desktop\DS-JD.xlsx")
 
-# Define a function to clean and summarize job descriptions
-def clean_and_summarize(text):
+import os
+import re
+import nltk
+import openai
+import streamlit as st
+import pandas as pd
+from pdfminer.high_level import extract_text
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+import spacy
+
+# Download NLTK resources
+nltk.download("punkt")
+nltk.download("stopwords")
+nltk.download("wordnet")
+nltk.download('omw-1.4')
+
+# Set your OpenAI API key here
+api_key = 'your api key here'
+
+# Load the Excel file with job descriptions
+ds_jd_df = pd.read_excel(r"C:\Users\Yash\Desktop\DS-JD.xlsx")
+
+# Download spaCy English language model
+spacy.cli.download("en_core_web_sm")
+
+# Load the English language model
+nlp = spacy.load("en_core_web_sm")
+
+def preprocess_text(text):
     # Convert text to lowercase
     text = text.lower()
 
     # Remove special characters and numbers
     text = re.sub(r"[^a-zA-Z0-9\s.]", "", text)
 
-    # Tokenize the text
-    words = word_tokenize(text)
+    # Tokenize the text using spaCy
+    doc = nlp(text)
+    words = [token.lemma_ for token in doc if token.is_alpha]
 
     # Remove stopwords
     stop_words = set(stopwords.words("english"))
     words = [word for word in words if word not in stop_words]
-
-    # Lemmatize words
-    lemmatizer = WordNetLemmatizer()
-    words = [lemmatizer.lemmatize(word) for word in words]
 
     # Join the cleaned words into a concise summary
     summary = " ".join(words)
@@ -47,14 +73,7 @@ def clean_and_summarize(text):
 
 def clean_jd(ds_jd_df):
     jd_text = ds_jd_df['Job Description']
-
-    test = []
-    for job in jd_text:
-        jd_summary = clean_and_summarize(job)
-        test.append(jd_summary)
-
-    jd_test = ' '.join(test)
-
+    jd_test = jd_text.apply(preprocess_text).str.cat(sep=' ')
     return jd_test
 
 def analyze_resume(user_resume, job_description, api_key):
@@ -83,13 +102,14 @@ if uploaded_file is not None:
     user_jd = st.text_input("Copy and paste your custom job description here:")
 
     if st.button("Custom Analysis"):
-        cleaned_resume = clean_and_summarize(uploaded_file)
+        cleaned_resume = preprocess_text(extract_text(uploaded_file))
         custom_analysis = analyze_resume(cleaned_resume, user_jd, api_key)
         st.write(custom_analysis)
 
     if st.button("Analyse Resume"):
-        cleaned_resume = clean_and_summarize(uploaded_file)
+        cleaned_resume = preprocess_text(extract_text(uploaded_file))
         analysed_resume = analyze_resume(cleaned_resume, jd_test, api_key)
-        st.write(analyzed_resume)
+        st.write(analysed_resume)
+
 
 # streamlit run D:\VSCodium\Guvi-Projects\Resume_analyzer.py
