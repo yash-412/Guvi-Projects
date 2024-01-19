@@ -28,7 +28,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 conn = psycopg2.connect(
-    host="localhost",
+    host="192.168.1.2",
     dbname="Youtube Exp",
     password="+91naveen",
     user="postgres"
