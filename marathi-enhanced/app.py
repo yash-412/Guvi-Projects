@@ -4,7 +4,7 @@ from transformers import WhisperProcessor, WhisperForConditionalGeneration
 
 # Initialize the processor and model outside the function
 processor = WhisperProcessor.from_pretrained("openai/whisper-small")
-model_path = "yash-412/fn-small-mr/final_model"
+model_path = "yash-412/fn-small-mr/final_model/model.safetensors"
 model = WhisperForConditionalGeneration.from_pretrained(model_path)
 model.config.forced_decoder_ids = processor.get_decoder_prompt_ids(language="mr", task="transcribe")
 
