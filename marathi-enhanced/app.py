@@ -4,13 +4,10 @@ from transformers import WhisperProcessor, WhisperForConditionalGeneration
 
 # Initialize the processor and model outside the function
 processor = WhisperProcessor.from_pretrained("openai/whisper-small")
-model = WhisperForConditionalGeneration.from_pretrained("yash-412/fn-small-mr/final_model")
+model = WhisperForConditionalGeneration.from_pretrained("yash-412/fn-small-mr")
 model.config.forced_decoder_ids = processor.get_decoder_prompt_ids(language="mr", task="transcribe")
 
-def get_transcription(filename: str):
-    # Load audio file
-    speech, sr = librosa.load(filename, sr=16000)
-    
+def get_transcription(speech):
     # Process audio using the Whisper processor
     input_features = processor(speech, sampling_rate=16000, return_tensors="pt").input_features
 
@@ -22,21 +19,20 @@ def get_transcription(filename: str):
 
 def main():
     st.title("Marathi Enhanced-Whisper Transcription")
-    st.sidebar.title("File Upload")
+    st.write("Upload an audio file")
 
-    uploaded_file = st.sidebar.file_uploader("Choose an audio file", type=["wav", "mp3"])
+    uploaded_file = st.file_uploader("Choose an audio file", type=["mp3", "wav"])
 
     if uploaded_file:
-        st.audio(uploaded_file, format="audio/wav")
+        st.audio(uploaded_file, format='audio/wav', start_time=0)
 
-        if st.button("Get Transcription"):
-            try:
-                transcription = get_transcription(uploaded_file.name)
-                st.success("Transcription:")
-                st.write(transcription[0])
+        audio_bytes = uploaded_file.read()
+        speech, _ = librosa.load(io.BytesIO(audio_bytes), sr=16000)
 
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+        if st.button("Transcribe"):
+            transcription = get_transcription(speech)
+            st.subheader("Transcription:")
+            st.write(transcription)
 
 if __name__ == "__main__":
     main()
