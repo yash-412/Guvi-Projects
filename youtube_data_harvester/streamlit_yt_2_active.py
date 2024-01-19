@@ -27,12 +27,8 @@ engine = create_engine(db_url)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-conn = psycopg2.connect(
-    host="192.168.1.2",
-    dbname="Youtube Exp",
-    password="+91naveen",
-    user="postgres"
-)
+conn = st.connection("postgresql", type="sql")
+
 cursor = conn.cursor()
 
 def channel_id(channel_name):
