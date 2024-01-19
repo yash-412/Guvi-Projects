@@ -1,6 +1,6 @@
 import streamlit as st
 import librosa
-from transformers import WhisperProcessor, WhisperForConditionalGeneration
+from transformers import WhisperProcessor, WhisperForConditionalGeneration, WhisperConfig
 
 # Initialize the processor and model outside the function
 processor = WhisperProcessor.from_pretrained("openai/whisper-small")
