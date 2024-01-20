@@ -10,7 +10,7 @@ config_url = "https://raw.githubusercontent.com/yash-412/Yash-Projects/main/mara
 config_response = requests.get(config_url)
 config_dict = config_response.json() if config_response.status_code == 200 else None
 
-config = AutoConfig.from_dict(config_dict) if config_dict else None
+config = WhisperConfig.from_dict(config_dict) if config_dict else None
 model = WhisperForConditionalGeneration.from_pretrained("yash-412/fn-small-mr", config=config)
 model.config.forced_decoder_ids = processor.get_decoder_prompt_ids(language="mr", task="transcribe")
 
