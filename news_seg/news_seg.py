@@ -17,6 +17,9 @@ import requests
 from nltk.corpus import wordnet
 import joblib
 from transformers import BartForConditionalGeneration, BartTokenizer
+import pickle
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.svm import LinearSVC
 
 # Load pre-trained model and tokenizer
 model_name = "facebook/bart-large-cnn"
@@ -47,7 +50,13 @@ def scrape(url):
 
     return title, article_text
 
-nom_model = joblib.load(r'd:\VSCodium\Guvi-Projects\news_seg\model.joblib')
+# nom_model = joblib.load(r'd:\VSCodium\Guvi-Projects\news_seg\model.joblib')
+
+with open(r'd:\VSCodium\Guvi-Projects\news_seg\best_model.pkl', 'rb') as file:
+    saved_data = pickle.load(file)
+
+nom_model = saved_data['model']
+m = saved_data['vectorizer']
 
 st.title("News Summary and Classification App")
 
@@ -67,8 +76,12 @@ if st.button("Enter"):
     st.subheader("Summary:")
     st.write(summary)
 
+    st.markdown(f"[Open Website]( {url})", unsafe_allow_html=True)
+
     # Predict category using the classification model
-    text = model.transform([summary]).toarray()
+    text = m.transform([summary]).toarray()
     result = nom_model.predict(text)
     st.subheader("Predicted Category:")
-    st.write(result)
+    st.markdown(f"<p style='font-size: 20px; text-align: center;'> {result[0]}</p>", unsafe_allow_html=True)
+
+# streamlit run D:\VSCodium\Guvi-Projects\news_seg\news_seg.py
